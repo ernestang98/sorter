@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
+.App {
+  text-align: center;
+}
+
+.container {
+  padding-top: 80px;
+}
+
+.tile {
+  width: 10px;
+  display: inline-block;
+  margin: 0 1px;
+}
+
+.nav {
+  background-color: #004253;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.button {
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden;
+  outline:none;
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+h1 {
+  font-family: 'Varela Round', sans-serif;
+}
+
+.SetSpeedComponent  {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.SetSpeedComponent input {
+  height: 50%;
+  width: 20%;
+}
+
+.SetSpeedComponent p {
+  color: white;
+  font-size: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  padding-right: 10px;
+}
+
+.navDisabled {
+  display: none;
+  background-color: #004253;
+  height: 75px;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.hidden {
+  color: #f87979 !important;
+}
+
+
+
