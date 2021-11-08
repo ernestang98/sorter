@@ -239,11 +239,15 @@ class VisualizerComponent extends React.Component {
                         {/*<p>{this.state.animationSpeed}</p>*/}
                     </div>
                 </div>
-                <h1>Sorting Algorithm Visualizer</h1>
-                <div className={"container"} id={"container"}>
-                    {this.state.array.map(e=>{
-                        return <div className={"tile"} style={{height: e, backgroundColor: this.state.color}}>{}</div>
-                    })}
+                <div className="center">
+                    <div className="centerr">
+                        <h1>Sorting Algorithm Visualizer</h1>
+                        <div className={"container"} id={"container"}>
+                            {this.state.array.map(e=>{
+                                return <div className={"tile"} style={{height: e, backgroundColor: this.state.color, color: "rgba(0, 0, 0, 0)"}}>.</div>
+                            })}
+                        </div>
+                    </div>
                 </div>
             </div>
         )
