@@ -1,46 +1,43 @@
-function swap(items, leftIndex, rightIndex){
-    let temp = items[leftIndex];
-    items[leftIndex] = items[rightIndex];
-    items[rightIndex] = temp;
+const swap = (arr, left, right) =>  {
+    const temp = arr[left]
+    arr[left] = arr[right]
+    arr[right] = temp;
 }
 
-function partition(items, left, right, animations) {
-    let pivot   = items[Math.floor((right + left) / 2)], //middle element
-        i       = left, //left pointer
-        j       = right; //right pointer
-    while (i <= j) {
-        while (items[i] < pivot) {
-            i++;
-        }
-        while (items[j] > pivot) {
-            j--;
-        }
-        if (i <= j) {
-            swap(items, i, j);
+const partitionHigh = (arr, low, high, animations) => {
+    let pivot = arr[high];
+    let i = low;
+
+    for(let j = low; j < high; j++){
+        if(arr[j] <= pivot){
+            swap(arr, i, j);
             animations.push({"swap": [i, j]})
             i++;
-            j--;
-        }
-        else {
-            animations.push({"noSwap": [i, j]})
         }
     }
+    swap(arr, i, high);
+    animations.push({"swap": [i, high]})
     return i;
 }
 
-function QuickSort(items, left, right) {
-    let animations = []
-    let index;
-    if (items.length > 1) {
-        index = partition(items, left, right, animations); //index returned from partition
-        if (left < index - 1) { //more elements on the left side of the pivot
-            QuickSort(items, left, index - 1);
+const QuickSort = (arr) => {
+    let stack = [];
+    let animations = [];
+    let start = 0;
+    let end = arr.length - 1;
+    stack.push({x: start, y: end});
+    while(stack.length){
+        const { x, y } = stack.shift();
+        const PI = partitionHigh(arr, x, y, animations);
+        if (PI - 1 > x) {
+            stack.push({x: x, y: PI - 1});
         }
-        if (index < right) { //more elements on the right side of the pivot
-            QuickSort(items, index, right);
+        if (PI + 1 < y) {
+            stack.push({x: PI + 1, y: y});
         }
     }
-    return items;
+    console.log(animations)
+    return animations
 }
 
 export default QuickSort

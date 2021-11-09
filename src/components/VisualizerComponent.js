@@ -9,8 +9,27 @@ import QuickSort from "../algorithms/QuickSort";
 import {MergeSort} from "../algorithms/MergeSort";
 import ButtonComponent from "./ButtonComponent"
 
-const TILE_COLOR = "#c0d7e2"
+const TILE_COLOR_START = "rgb(112,170,213)"
+const TILE_COLOR_END = "rgb(213,207,102)"
 
+const TILE_COLOR_START_TUPLE = TILE_COLOR_START.substring(4, TILE_COLOR_START.length-1).split(",")
+
+const TILE_COLOR_START_R = parseInt(TILE_COLOR_START_TUPLE[0].trim())
+const TILE_COLOR_START_G = parseInt(TILE_COLOR_START_TUPLE[1].trim())
+const TILE_COLOR_START_B = parseInt(TILE_COLOR_START_TUPLE[2].trim())
+
+const TILE_COLOR_END_END = TILE_COLOR_END.substring(4, TILE_COLOR_END.length-1).split(",")
+
+const TILE_COLOR_END_R = parseInt(TILE_COLOR_END_END[0].trim())
+const TILE_COLOR_END_G = parseInt(TILE_COLOR_END_END[1].trim())
+const TILE_COLOR_END_B = parseInt(TILE_COLOR_END_END[2].trim())
+
+const COLOR_INTERVAL_R = Math.abs(TILE_COLOR_START_R - TILE_COLOR_END_R)
+const COLOR_INTERVAL_G = Math.abs(TILE_COLOR_START_G - TILE_COLOR_END_G)
+const COLOR_INTERVAL_B = Math.abs(TILE_COLOR_START_B - TILE_COLOR_END_B)
+
+const NUMBER_OF_TILES = 100
+const MAX = 500
 const TILE_COLOR_2 = "#34a3d9"
 
 let animate = async function(animations, speed) {
@@ -30,8 +49,11 @@ let animate = async function(animations, speed) {
                 console.log("SHIFT")
                 if (status === "noSwap") {
                     try {
-                        tiles[indices[1]].style.backgroundColor = TILE_COLOR
-                        tiles[indices[0]].style.backgroundColor = TILE_COLOR
+                        // tiles[indices[1]].style.backgroundColor = TILE_COLOR
+                        // tiles[indices[0]].style.backgroundColor = TILE_COLOR
+
+                        // tiles[indices[1]].style.backgroundColor = TILE_COLOR
+                        // tiles[indices[0]].style.backgroundColor = TILE_COLOR
                     }
                     catch(err) {
                         console.log(err)
@@ -39,13 +61,24 @@ let animate = async function(animations, speed) {
                 }
                 else {
                     try {
+                        // let temp;
+                        // temp = tiles[indices[1]].style.height
+                        // tiles[indices[1]].style.height = tiles[indices[0]].style.height
+                        // tiles[indices[0]].style.height = temp
+                        //
+                        // tiles[indices[1]].style.backgroundColor = TILE_COLOR
+                        // tiles[indices[0]].style.backgroundColor = TILE_COLOR
+
                         let temp;
                         temp = tiles[indices[1]].style.height
                         tiles[indices[1]].style.height = tiles[indices[0]].style.height
                         tiles[indices[0]].style.height = temp
 
-                        tiles[indices[1]].style.backgroundColor = TILE_COLOR
-                        tiles[indices[0]].style.backgroundColor = TILE_COLOR
+                        let temp1 = tiles[indices[1]].style.backgroundColor
+                        let temp2 = tiles[indices[0]].style.backgroundColor
+
+                        tiles[indices[1]].style.backgroundColor = temp2
+                        tiles[indices[0]].style.backgroundColor = temp1
                     }
                     catch(err) {
                         console.log(err)
@@ -68,6 +101,7 @@ class VisualizerComponent extends React.Component {
         this.state = {
             array: [],
             color: "",
+            colorArray: [],
             animationSpeed: 1
         }
         this.handleChange = this.handleChange.bind(this)
@@ -79,13 +113,45 @@ class VisualizerComponent extends React.Component {
 
     resetArray() {
         let temp = []
-        for (let i = 0; i < 100; i++) {
-            temp.push(this.createRandomInt(1, 500))
+        let newColorArray = []
+        for (let i = 0; i < NUMBER_OF_TILES; i++) {
+            let val = this.createRandomInt(1, MAX)
+            temp.push(val)
+            let color = "rgb("
+            if (TILE_COLOR_START_R > TILE_COLOR_END_R) {
+                color += Math.floor(TILE_COLOR_START_R - (COLOR_INTERVAL_R / MAX) * val).toString() + ","
+            }
+            else {
+                color += Math.floor(TILE_COLOR_START_R + (COLOR_INTERVAL_R / MAX) * val).toString() + ","
+            }
+
+            if (TILE_COLOR_START_G > TILE_COLOR_END_G) {
+                color += Math.floor(TILE_COLOR_START_G - (COLOR_INTERVAL_G / MAX) * val).toString() + ","
+            }
+            else {
+                color += Math.floor(TILE_COLOR_START_G + (COLOR_INTERVAL_G / MAX) * val).toString() + ","
+            }
+
+            if (TILE_COLOR_START_B > TILE_COLOR_END_B) {
+                color += Math.floor(TILE_COLOR_START_B - (COLOR_INTERVAL_B / MAX) * val).toString() + ")"
+            }
+            else {
+                color += Math.floor(TILE_COLOR_START_B + (COLOR_INTERVAL_B / MAX) * val).toString() + ")"
+            }
+            newColorArray.push(color)
+
+            // if(Math.floor(parseInt(TILE_COLOR_START_R.trim()) - (COLOR_INTERVAL_R / MAX) * val) < 0) {
+            //     console.log(TILE_COLOR_START_R.trim())
+            //     console.log(TILE_COLOR_END_R)
+            //     console.log((COLOR_INTERVAL_R / MAX) * val)
+            // }
         }
+
         this.setState({
             array: temp,
-            color: TILE_COLOR,
+            color: "",
             animationSpeed: 1,
+            newColorArray: newColorArray
         })
     }
 
@@ -141,13 +207,24 @@ class VisualizerComponent extends React.Component {
         }
     }
 
-    // quickSort() {
-    //     const array = QuickSort(this.state.array, 0, this.state.array.length - 1)
-    //     this.setState({
-    //         array: array
-    //     })
-    // }
-    //
+    quickSort() {
+        if (!Number.isInteger(parseInt(this.state.animationSpeed))) {
+            alert("Enter Integer!")
+            return ''
+        }
+        else {
+            const animations = QuickSort(this.state.array, 0, this.state.array.length - 1, [])
+            console.log(animations)
+            animate(animations, this.state.animationSpeed).then(r => console.log(r))
+        }
+        /*
+        const array = QuickSort(this.state.array, 0, this.state.array.length - 1)
+        this.setState({
+            array: array
+        })
+         */
+    }
+
     async mergeSort() {
         if (!Number.isInteger(parseInt(this.state.animationSpeed))) {
             alert("Enter Integer!")
@@ -155,6 +232,31 @@ class VisualizerComponent extends React.Component {
         }
         else {
             const animations = await MergeSort(this.state.array);
+            let newColorArray = []
+            for (let i = 0; i < NUMBER_OF_TILES; i++) {
+                let newColor = "rgb("
+                if (TILE_COLOR_START_R > TILE_COLOR_END_R) {
+                    newColor += Math.floor(TILE_COLOR_START_R - (COLOR_INTERVAL_R / MAX) * i).toString() + ","
+                }
+                else {
+                    newColor += Math.floor(TILE_COLOR_START_R + (COLOR_INTERVAL_R / MAX) * i).toString() + ","
+                }
+                if (TILE_COLOR_START_G > TILE_COLOR_END_G) {
+                    newColor += Math.floor(TILE_COLOR_START_G - (COLOR_INTERVAL_G / MAX) * i).toString() + ","
+                }
+                else {
+                    newColor += Math.floor(TILE_COLOR_START_G + (COLOR_INTERVAL_G / MAX) * i).toString() + ","
+                }
+                if (TILE_COLOR_START_B > TILE_COLOR_END_B) {
+                    newColor += Math.floor(TILE_COLOR_START_B - (COLOR_INTERVAL_B / MAX) * i).toString() + ")"
+                }
+                else {
+                    newColor += Math.floor(TILE_COLOR_START_B + (COLOR_INTERVAL_B / MAX) * i).toString() + ")"
+                }
+                newColorArray.push(newColor)
+            }
+
+
             let special = async function(speed) {
                 $('.nav').css('display', "none")
                 $('.navDisabled').css('display', "flex")
@@ -165,22 +267,23 @@ class VisualizerComponent extends React.Component {
                         const [barOneIdx, barTwoIdx] = animations[i];
                         const barOneStyle = arrayBars[barOneIdx].style;
                         const barTwoStyle = arrayBars[barTwoIdx].style;
-                        const color = i % 3 === 0 ? TILE_COLOR : TILE_COLOR;
+
+                        const color = i % 3 === 0 ? TILE_COLOR_END : TILE_COLOR_START;
                         await new Promise((resolve, reject) =>
-                        setTimeout(() => {
-                            barOneStyle.backgroundColor = color;
-                            barTwoStyle.backgroundColor = color;
-                            resolve()
-                        }, i * speed/1000000)
+                            setTimeout(() => {
+                                barOneStyle.backgroundColor = "rgba(0, 0, 0)";
+                                barTwoStyle.backgroundColor = "rgba(255, 255, 255)";
+                                resolve()
+                            }, i * speed/1000000)
                         );
                     } else {
                         await new Promise((resolve, reject) =>
-                        setTimeout(() => {
-                            const [barOneIdx, newHeight] = animations[i];
-                            const barOneStyle = arrayBars[barOneIdx].style;
-                            barOneStyle.height = `${newHeight}px`;
-                            resolve()
-                        }, i * speed/1000000));
+                            setTimeout(() => {
+                                const [barOneIdx, newHeight] = animations[i];
+                                const barOneStyle = arrayBars[barOneIdx].style;
+                                barOneStyle.height = `${newHeight}px`;
+                                resolve()
+                            }, i * speed/1000000));
                     }
                 }
                 $('.navDisabled').css('display', "none")
@@ -198,11 +301,12 @@ class VisualizerComponent extends React.Component {
                 <div className={"navDisabled"}>
                     <ButtonComponent status={false} function={() => {window.location.reload(false)}} name="Reset"/>
                     <button className={"button hidden"}>Generate New Array</button>
-                    <button className={"button hidden"}>MergeSort</button>
-                    <button className={"button hidden"}>BubbleSort</button>
-                    <button className={"button hidden"}>HeapSort</button>
-                    <button className={"button hidden"}>InsertionSort</button>
-                    <button className={"button hidden"}>SelectionSort</button>
+                    <button className={"button hidden"}>Merge Sort</button>
+                    <button className={"button hidden"}>Bubble Sort</button>
+                    <button className={"button hidden"}>Heap Sort</button>
+                    <button className={"button hidden"}>Insertion Sort</button>
+                    <button className={"button hidden"}>Selection Sort</button>
+                    <button className={"button hidden"}>Quick Sort</button>
                     <div className={"SetSpeedComponent"}>
                         <p className={"SetSpeedComponentHeader hidden"}>Set Speed (ms): </p>
                         <input id={"idDisabled"}
@@ -217,19 +321,21 @@ class VisualizerComponent extends React.Component {
                     <ButtonComponent function={() => this.resetArray()}
                                      name="Generate New Array"
                                      />
-                    <ButtonComponent function={() => this.mergeSort()}
-                                     name="MergeSort"
-                    />
+                    {/*<ButtonComponent function={() => this.mergeSort()}*/}
+                    {/*                 name="Merge Sort"*/}
+                    {/*/>*/}
                     <ButtonComponent function={() => this.bubbleSort()}
-                                     name="BubbleSort"
+                                     name="Bubble Sort"
                                     />
                     <ButtonComponent function={() => this.heapSort()}
-                                     name="HeapSort"
+                                     name="Heap Sort"
                                     />
                     <ButtonComponent function={() => this.insertionSort()}
-                                     name="InsertionSort"/>
+                                     name="Insertion Sort"/>
                     <ButtonComponent function={() => this.selectionSort()}
-                                     name="SelectionSort"/>
+                                     name="Selection Sort"/>
+                    <ButtonComponent function={() => this.quickSort()}
+                                     name="Quick Sort"/>
                     <div className={"SetSpeedComponent"}>
                         <p className={"SetSpeedComponentHeader"}>Set Speed (ms): </p>
                         <input id={"id"}
@@ -243,8 +349,8 @@ class VisualizerComponent extends React.Component {
                     <div className="centerr">
                         <h1>Sorting Algorithm Visualizer</h1>
                         <div className={"container"} id={"container"}>
-                            {this.state.array.map(e=>{
-                                return <div className={"tile"} style={{height: e, backgroundColor: this.state.color, color: "rgba(0, 0, 0, 0)"}}>.</div>
+                            {this.state.array.map((e, i)=>{
+                                return <div className={"tile"} style={{height: e, backgroundColor: this.state.newColorArray[i], color: "rgba(0, 0, 0, 0)"}}>.</div>
                             })}
                         </div>
                     </div>
