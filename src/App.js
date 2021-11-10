@@ -1,6 +1,5 @@
 import './App.css';
 
-
 import VisualizerComponent from "./components/VisualizerComponent";
 import React from "react";
 

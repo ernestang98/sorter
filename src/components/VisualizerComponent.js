@@ -9,8 +9,8 @@ import QuickSort from "../algorithms/QuickSort";
 import {MergeSort} from "../algorithms/MergeSort";
 import ButtonComponent from "./ButtonComponent"
 
-const TILE_COLOR_START = "rgb(112,170,213)"
-const TILE_COLOR_END = "rgb(213,207,102)"
+const TILE_COLOR_START = "rgb(0,151,255)"
+const TILE_COLOR_END = "rgb(238,116,0)"
 
 const TILE_COLOR_START_TUPLE = TILE_COLOR_START.substring(4, TILE_COLOR_START.length-1).split(",")
 
@@ -28,7 +28,7 @@ const COLOR_INTERVAL_R = Math.abs(TILE_COLOR_START_R - TILE_COLOR_END_R)
 const COLOR_INTERVAL_G = Math.abs(TILE_COLOR_START_G - TILE_COLOR_END_G)
 const COLOR_INTERVAL_B = Math.abs(TILE_COLOR_START_B - TILE_COLOR_END_B)
 
-const NUMBER_OF_TILES = 100
+const NUMBER_OF_TILES = 50
 const MAX = 500
 const TILE_COLOR_2 = "#34a3d9"
 
@@ -105,6 +105,7 @@ class VisualizerComponent extends React.Component {
             animationSpeed: 1
         }
         this.handleChange = this.handleChange.bind(this)
+        this.resetArray = this.resetArray.bind(this)
     }
 
     componentDidMount() {
@@ -138,7 +139,7 @@ class VisualizerComponent extends React.Component {
             else {
                 color += Math.floor(TILE_COLOR_START_B + (COLOR_INTERVAL_B / MAX) * val).toString() + ")"
             }
-            newColorArray.push(color)
+            newColorArray.push([val, color])
 
             // if(Math.floor(parseInt(TILE_COLOR_START_R.trim()) - (COLOR_INTERVAL_R / MAX) * val) < 0) {
             //     console.log(TILE_COLOR_START_R.trim())
@@ -226,53 +227,41 @@ class VisualizerComponent extends React.Component {
     }
 
     async mergeSort() {
+
+        const color = this.state.newColorArray;
+
+        const sortedColor = color.sort(function(a, b) {
+            return b[0] - a[0]
+        }).reverse()
+
+        console.log(sortedColor)
+
         if (!Number.isInteger(parseInt(this.state.animationSpeed))) {
             alert("Enter Integer!")
             return ''
         }
         else {
             const animations = await MergeSort(this.state.array);
-            let newColorArray = []
-            for (let i = 0; i < NUMBER_OF_TILES; i++) {
-                let newColor = "rgb("
-                if (TILE_COLOR_START_R > TILE_COLOR_END_R) {
-                    newColor += Math.floor(TILE_COLOR_START_R - (COLOR_INTERVAL_R / MAX) * i).toString() + ","
-                }
-                else {
-                    newColor += Math.floor(TILE_COLOR_START_R + (COLOR_INTERVAL_R / MAX) * i).toString() + ","
-                }
-                if (TILE_COLOR_START_G > TILE_COLOR_END_G) {
-                    newColor += Math.floor(TILE_COLOR_START_G - (COLOR_INTERVAL_G / MAX) * i).toString() + ","
-                }
-                else {
-                    newColor += Math.floor(TILE_COLOR_START_G + (COLOR_INTERVAL_G / MAX) * i).toString() + ","
-                }
-                if (TILE_COLOR_START_B > TILE_COLOR_END_B) {
-                    newColor += Math.floor(TILE_COLOR_START_B - (COLOR_INTERVAL_B / MAX) * i).toString() + ")"
-                }
-                else {
-                    newColor += Math.floor(TILE_COLOR_START_B + (COLOR_INTERVAL_B / MAX) * i).toString() + ")"
-                }
-                newColorArray.push(newColor)
-            }
-
-
             let special = async function(speed) {
                 $('.nav').css('display', "none")
                 $('.navDisabled').css('display', "flex")
                 for (let i = 0; i < animations.length; i++) {
-                    const arrayBars = document.getElementsByClassName('tile');
+                    var arrayBars = document.getElementsByClassName('tile');
                     const isColorChange = i % 3 !== 2;
                     if (isColorChange) {
                         const [barOneIdx, barTwoIdx] = animations[i];
                         const barOneStyle = arrayBars[barOneIdx].style;
                         const barTwoStyle = arrayBars[barTwoIdx].style;
+                        const barOneHeight = arrayBars[barOneIdx].id;
+                        const barTwoHeight = arrayBars[barTwoIdx].id;
 
-                        const color = i % 3 === 0 ? TILE_COLOR_END : TILE_COLOR_START;
+                        const color1 = color.filter(element => element[0] === barOneHeight)[1]
+                        const color2 = color.filter(element => element[0] === barTwoHeight)[1]
+
                         await new Promise((resolve, reject) =>
                             setTimeout(() => {
-                                barOneStyle.backgroundColor = "rgba(0, 0, 0)";
-                                barTwoStyle.backgroundColor = "rgba(255, 255, 255)";
+                                barOneStyle.backgroundColor = "rgb(255, 255, 255)";
+                                barTwoStyle.backgroundColor = color2;
                                 resolve()
                             }, i * speed/1000000)
                         );
@@ -285,6 +274,10 @@ class VisualizerComponent extends React.Component {
                                 resolve()
                             }, i * speed/1000000));
                     }
+                    var arrayBars = document.getElementsByClassName('tile');
+                    console.log(Math.floor(i/animations.length * NUMBER_OF_TILES))
+                    console.log(sortedColor[Math.floor(i/animations.length * NUMBER_OF_TILES)][1])
+                    arrayBars[Math.floor(i/animations.length * NUMBER_OF_TILES)].style.backgroundColor = sortedColor[Math.floor(i/animations.length * NUMBER_OF_TILES)][1]
                 }
                 $('.navDisabled').css('display', "none")
                 $('.nav').css('display', "flex")
@@ -321,9 +314,9 @@ class VisualizerComponent extends React.Component {
                     <ButtonComponent function={() => this.resetArray()}
                                      name="Generate New Array"
                                      />
-                    {/*<ButtonComponent function={() => this.mergeSort()}*/}
-                    {/*                 name="Merge Sort"*/}
-                    {/*/>*/}
+                    <ButtonComponent function={() => this.mergeSort()}
+                                     name="Merge Sort"
+                    />
                     <ButtonComponent function={() => this.bubbleSort()}
                                      name="Bubble Sort"
                                     />
@@ -350,7 +343,7 @@ class VisualizerComponent extends React.Component {
                         <h1>Sorting Algorithm Visualizer</h1>
                         <div className={"container"} id={"container"}>
                             {this.state.array.map((e, i)=>{
-                                return <div className={"tile"} style={{height: e, backgroundColor: this.state.newColorArray[i], color: "rgba(0, 0, 0, 0)"}}>.</div>
+                                return <div id={e} className={"tile"} style={{height: e, backgroundColor: this.state.newColorArray[i][1], color: "rgba(0, 0, 0, 0)"}}>.</div>
                             })}
                         </div>
                     </div>
