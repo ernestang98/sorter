@@ -9,8 +9,8 @@ import QuickSort from "../algorithms/QuickSort";
 import {MergeSort} from "../algorithms/MergeSort";
 import ButtonComponent from "./ButtonComponent"
 
-const TILE_COLOR_START = "rgb(0,151,255)"
-const TILE_COLOR_END = "rgb(238,116,0)"
+const TILE_COLOR_START = "rgb(71,110,210)"
+const TILE_COLOR_END = "rgb(185,189,71)"
 
 const TILE_COLOR_START_TUPLE = TILE_COLOR_START.substring(4, TILE_COLOR_START.length-1).split(",")
 
@@ -28,7 +28,7 @@ const COLOR_INTERVAL_R = Math.abs(TILE_COLOR_START_R - TILE_COLOR_END_R)
 const COLOR_INTERVAL_G = Math.abs(TILE_COLOR_START_G - TILE_COLOR_END_G)
 const COLOR_INTERVAL_B = Math.abs(TILE_COLOR_START_B - TILE_COLOR_END_B)
 
-const NUMBER_OF_TILES = 50
+const NUMBER_OF_TILES = 100
 const MAX = 500
 const TILE_COLOR_2 = "#34a3d9"
 
@@ -249,19 +249,21 @@ class VisualizerComponent extends React.Component {
                     var arrayBars = document.getElementsByClassName('tile');
                     const isColorChange = i % 3 !== 2;
                     if (isColorChange) {
-                        const [barOneIdx, barTwoIdx] = animations[i];
-                        const barOneStyle = arrayBars[barOneIdx].style;
-                        const barTwoStyle = arrayBars[barTwoIdx].style;
-                        const barOneHeight = arrayBars[barOneIdx].id;
-                        const barTwoHeight = arrayBars[barTwoIdx].id;
-
-                        const color1 = color.filter(element => element[0] === barOneHeight)[1]
-                        const color2 = color.filter(element => element[0] === barTwoHeight)[1]
+                        // const [barOneIdx, barTwoIdx] = animations[i];
+                        // const barOneStyle = arrayBars[barOneIdx].style;
+                        // const barTwoStyle = arrayBars[barTwoIdx].style;
+                        // const barOneHeight = arrayBars[barOneIdx].id;
+                        // const barTwoHeight = arrayBars[barTwoIdx].id;
+                        //
+                        // // console.log(barOneHeight)
+                        // // console.log(barTwoHeight)
+                        // console.log(barOneHeight)
+                        //
+                        // const color1 = color.filter(element => element[0] === barOneHeight)[1]
+                        // const color2 = color.filter(element => element[0] === barTwoHeight)[1]
 
                         await new Promise((resolve, reject) =>
                             setTimeout(() => {
-                                barOneStyle.backgroundColor = "rgb(255, 255, 255)";
-                                barTwoStyle.backgroundColor = color2;
                                 resolve()
                             }, i * speed/1000000)
                         );
@@ -274,16 +276,22 @@ class VisualizerComponent extends React.Component {
                                 resolve()
                             }, i * speed/1000000));
                     }
-                    var arrayBars = document.getElementsByClassName('tile');
-                    console.log(Math.floor(i/animations.length * NUMBER_OF_TILES))
-                    console.log(sortedColor[Math.floor(i/animations.length * NUMBER_OF_TILES)][1])
+                    // arrayBars = document.getElementsByClassName('tile');
+                    console.log(i)
+                    arrayBars = document.querySelectorAll(".tile");
                     arrayBars[Math.floor(i/animations.length * NUMBER_OF_TILES)].style.backgroundColor = sortedColor[Math.floor(i/animations.length * NUMBER_OF_TILES)][1]
+                    // console.log(Array.from(arrayBars).forEach(element => console.log(element.id)))
+                    // console.log(Array.from(arrayBars).filter(element => parseInt(element.id) === Math.floor(i/animations.length * NUMBER_OF_TILES)))
+                    // console.log(Math.floor(i/animations.length * NUMBER_OF_TILES))
+                    // console.log(arrayBars)
+                    // console.log(arrayBars)
+                    // console.log(arrayBars.filter(element => element.id === Math.floor(i/animations.length * NUMBER_OF_TILES)))
                 }
                 $('.navDisabled').css('display', "none")
                 $('.nav').css('display', "flex")
             }
 
-            special(this.state.animationSpeed)
+            special(this.state.animationSpeed / 1000000000000000)
 
         }
     }
