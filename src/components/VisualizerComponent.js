@@ -273,13 +273,17 @@ class VisualizerComponent extends React.Component {
                                 const [barOneIdx, newHeight] = animations[i];
                                 const barOneStyle = arrayBars[barOneIdx].style;
                                 barOneStyle.height = `${newHeight}px`;
+                                for (let a = 0; a < sortedColor.length; a++) {
+                                    if (sortedColor[a][0] === newHeight) {
+                                        barOneStyle.backgroundColor = sortedColor[a][1]
+                                    }
+                                }
                                 resolve()
                             }, i * speed/1000000));
                     }
                     // arrayBars = document.getElementsByClassName('tile');
-                    console.log(i)
                     arrayBars = document.querySelectorAll(".tile");
-                    arrayBars[Math.floor(i/animations.length * NUMBER_OF_TILES)].style.backgroundColor = sortedColor[Math.floor(i/animations.length * NUMBER_OF_TILES)][1]
+                    // arrayBars[Math.floor(i/animations.length * NUMBER_OF_TILES)].style.backgroundColor = sortedColor[Math.floor(i/animations.length * NUMBER_OF_TILES)][1]
                     // console.log(Array.from(arrayBars).forEach(element => console.log(element.id)))
                     // console.log(Array.from(arrayBars).filter(element => parseInt(element.id) === Math.floor(i/animations.length * NUMBER_OF_TILES)))
                     // console.log(Math.floor(i/animations.length * NUMBER_OF_TILES))
