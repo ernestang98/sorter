@@ -9,8 +9,8 @@ import QuickSort from "../algorithms/QuickSort";
 import {MergeSort} from "../algorithms/MergeSort";
 import ButtonComponent from "./ButtonComponent"
 
-const TILE_COLOR_START = "rgb(71,110,210)"
-const TILE_COLOR_END = "rgb(185,189,71)"
+const TILE_COLOR_START = "rgb(22,129,141)"
+const TILE_COLOR_END = "rgb(255,93,93)"
 
 const TILE_COLOR_START_TUPLE = TILE_COLOR_START.substring(4, TILE_COLOR_START.length-1).split(",")
 
